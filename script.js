@@ -74,7 +74,41 @@ startButton.addEventListener("click", startQuiz);
 restartButton.addEventListener("click", restartButton);
 
 function startQuiz() {
-  console.log("quiz started");
+  currentQuestionIndex = 0;
+  scoreSpan.textContent = 0;
+
+  startScreen.classList.remove("active");
+  quizScreen.classList.add("active");
+
+  // To only show 1 question at a time
+  showQuestion();
+}
+
+function showQuestion() {
+  answersDisabled = false;
+
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+
+  currentQuestionSpan.textContent = currentQuestionIndex + 1;
+
+  const progressPercent = (currentQuestionIndex / quizQuestions.length) * 100;
+  progressBar.style.width = progressPercent + "%";
+
+  questionText.textContent = currentQuestion.question;
+  answersContainer.innerHTML = "";
+
+  currentQuestion.answers.forEach((answer) => {
+    const button = document.createElement("button");
+    button.textContent = answer.text;
+    button.classList.add("answer-btn");
+
+    // dataset allows you to store custom data
+    button.dataset.correct = answer.correct;
+
+    //click event
+    button.addEventListener("click", selectAnswer);
+    answersContainer.appendChild(button);
+  });
 }
 
 function restartQuiz() {
