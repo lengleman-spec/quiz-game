@@ -111,6 +111,35 @@ function showQuestion() {
   });
 }
 
+function selectAnswer(event) {
+  if (answersDisabled) return;
+  answersDisabled = true;
+  const selectedButton = event.target;
+  const isCorrect = selectedButton.dataset.correct === "true";
+
+  Array.from(answersContainer.children).forEach((button) => {
+    if (button.dataset.correct === "true") {
+      button.classList.add("correct");
+    } else {
+      button.classList.add("incorrect");
+    }
+  });
+
+  //   Update the score if correct
+  if (isCorrect) {
+    score++;
+    scoreSpan.textContent = score;
+  }
+
+  setTimeout(() => {
+    if (currentQuestionIndex < quizQuestions.length) {
+      showQuestion();
+    } else {
+      showResults();
+    }
+  }, 1000);
+}
+
 function restartQuiz() {
   console.log("quiz restarted");
 }
