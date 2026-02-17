@@ -63,7 +63,7 @@ const quizQuestions = [
 ];
 
 // Quiz state vars
-let currentQuestion = 0;
+let currentQuestionIndex = 0;
 let score = 0;
 let answersDisabled = false;
 
@@ -71,12 +71,12 @@ totalQuestionsSpan.textContent = quizQuestions.length;
 maxScoreSpan.textContent = quizQuestions.length;
 
 startButton.addEventListener("click", startQuiz);
-restartButton.addEventListener("click", restartButton);
+restartButton.addEventListener("click", restartQuiz);
 
 function startQuiz() {
   currentQuestionIndex = 0;
   scoreSpan.textContent = 0;
-
+  score = 0;
   startScreen.classList.remove("active");
   quizScreen.classList.add("active");
 
@@ -120,7 +120,7 @@ function selectAnswer(event) {
   Array.from(answersContainer.children).forEach((button) => {
     if (button.dataset.correct === "true") {
       button.classList.add("correct");
-    } else {
+    } else if (button === selectedButton) {
       button.classList.add("incorrect");
     }
   });
@@ -132,14 +132,37 @@ function selectAnswer(event) {
   }
 
   setTimeout(() => {
-    if (currentQuestionIndex < quizQuestions.length) {
-      showQuestion();
-    } else {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex >= quizQuestions.length) {
       showResults();
+    } else {
+      showQuestion();
     }
   }, 1000);
 }
 
+function showResults() {
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
+
+  finalScoreSpan.textContent = score;
+  const percentage = (score / quizQuestions.length) * 100;
+
+  if (percentage === 100) {
+    resultMessage.textContent = "Perfect score!";
+  } else if (percentage >= 80) {
+    resultMessage.textContent = "Great job!";
+  } else if (percentage >= 60) {
+    resultMessage.textContent = "Good effort! Keep learning";
+  } else if (percentage >= 40) {
+    resultMessage.textContent = "Not the worst you could do...";
+  } else {
+    resultMessage.textContent = "Awful! Read a book!";
+  }
+}
+
 function restartQuiz() {
-  console.log("quiz restarted");
+  resultScreen.classList.remove("active");
+  startQuiz();
 }
